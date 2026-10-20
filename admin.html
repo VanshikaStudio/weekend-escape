@@ -30,6 +30,8 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: v
 .s-new { background: #E8E3EE; } .s-contacted { background: #FFE3B8; } .s-followed_up { background: #FFD9C2; }
 .s-replied, .s-meeting, .s-won { background: #C8F0E4; } .s-lost { background: #F3D0CC; }
 .test td { opacity: .5; }
+select.pill { border: 1px solid #d8cbbd; cursor: pointer; font-family: inherit; }
+input.note { min-width: 180px; padding: 5px 8px; border-width: 1px; border-radius: 8px; font-size: 13px; }
 .msg { margin: 10px 0 0; min-height: 1.4em; }
 .err { color: #C0392B; }
 pre { background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 10px; white-space: pre-wrap; margin: 10px 0 0; }
@@ -80,7 +82,7 @@ pre { background: #fff; border: 2px solid var(--ink); border-radius: 10px; paddi
         <table>
           <thead><tr>
             <th>Created</th><th>Email</th><th>Name</th><th>School</th><th>Trip</th><th>Answers</th>
-            <th>Status</th><th>Alerts</th><th>Emails out/in</th><th>Last email</th>
+            <th>Status</th><th>Notes</th><th>Alerts</th><th>Emails out/in</th><th>Last email</th>
           </tr></thead>
           <tbody id="leads"></tbody>
         </table>
@@ -94,6 +96,7 @@ pre { background: #fff; border: 2px solid var(--ink); border-radius: 10px; paddi
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const when = (d) => (d ? new Date(d).toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" }) : "–");
+const STATUSES = ["new", "contacted", "followed_up", "replied", "meeting", "won", "lost"];
 const isTest = (e) => /(^test\d*@|@example\.(com|org|net)$)/i.test(e);
 
 async function api(action, { method = "GET", body } = {}) {
@@ -130,7 +133,10 @@ async function loadLeads() {
       <td>${esc(l.name || "–")}</td><td>${esc(a.school || "–")}</td>
       <td>${esc(d.city || "–")}${d.estimatedTotal ? " · €" + esc(d.estimatedTotal) : ""}</td>
       <td>${esc(a.budget || "")} · ${esc(a.transport || "")} · ${esc(a.vibe || "")}</td>
-      <td><span class="pill s-${esc(l.status)}">${esc(l.status)}</span>${l.unsubscribed_at ? " <span class='pill'>unsubscribed</span>" : ""}</td>
+      <td><select class="pill s-${esc(l.status)}" data-id="${esc(l.id)}" data-field="status" aria-label="Status">
+        ${STATUSES.map((s) => `<option value="${s}"${s === l.status ? " selected" : ""}>${s}</option>`).join("")}
+      </select>${l.unsubscribed_at ? " <span class='pill'>unsubscribed</span>" : ""}</td>
+      <td><input class="note" data-id="${esc(l.id)}" data-field="notes" value="${esc(l.notes || "")}" placeholder="Add a note…" aria-label="Notes"></td>
       <td>${l.marketing_consent ? "yes" : "no"}</td><td>${out} / ${inn}</td><td>${when(l.last_email_at)}</td></tr>`;
   }).join("");
 }
@@ -166,6 +172,24 @@ $("#preview-form").addEventListener("submit", async (e) => {
   } catch (err) { msg.className = "msg err"; msg.textContent = err.message; }
   btn.disabled = false;
 });
+
+// Status saves as soon as it changes; a note saves when you leave the field or press Enter.
+$("#leads").addEventListener("change", async (e) => {
+  const t = e.target;
+  if (!t.dataset.field) return;
+  t.disabled = true;
+  try {
+    await api("update", { method: "POST", body: { id: t.dataset.id, [t.dataset.field]: t.value } });
+    if (t.dataset.field === "status") t.className = `pill s-${t.value}`;
+    t.style.outline = "2px solid var(--mint)";
+  } catch (err) {
+    t.style.outline = "2px solid #C0392B";
+    alert(err.message);
+  }
+  t.disabled = false;
+  setTimeout(() => (t.style.outline = ""), 1200);
+});
+$("#leads").addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.classList.contains("note")) e.target.blur(); });
 
 $("#refresh").addEventListener("click", () => loadLeads().catch(() => {}));
 $("#logout").addEventListener("click", async () => { await api("logout", { method: "POST" }).catch(() => {}); showLogin(); });

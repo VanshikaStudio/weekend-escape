@@ -4,11 +4,13 @@
 //   GET  leads              list of leads + email counts
 //   POST robot              "Run robot now"
 //   POST preview {to}       sends both emails to a test address
+//   POST update {id, status?, notes?}   changes a lead's status or notes by hand
 const { db } = require("../lib/db");
 const { safeEqual, adminToken } = require("../lib/auth");
 const { runRobot } = require("../lib/robot");
 const { sendPreview } = require("../lib/mail");
 
+const STATUSES = ["new", "contacted", "followed_up", "replied", "meeting", "won", "lost"];
 const COOKIE = "we_admin";
 const cookieOf = (req) => (String(req.headers.cookie || "").match(new RegExp(`(?:^|; )${COOKIE}=([^;]+)`)) || [])[1] || "";
 const setCookie = (res, value, maxAge) =>
@@ -38,7 +40,7 @@ module.exports = async (req, res) => {
 
   try {
     if (req.method === "GET" && action === "leads") {
-      const leads = await db("leads?select=id,created_at,name,email,consent,marketing_consent,answers,status,last_email_at,follow_ups,unsubscribed_at,emails(direction)&order=created_at.desc&limit=500");
+      const leads = await db("leads?select=id,created_at,name,email,consent,marketing_consent,answers,status,notes,last_email_at,follow_ups,unsubscribed_at,emails(direction)&order=created_at.desc&limit=500");
       return res.status(200).json({ ok: true, leads });
     }
     if (req.method === "POST" && action === "robot") {
@@ -50,6 +52,20 @@ module.exports = async (req, res) => {
       const to = String(body.to || "").trim().toLowerCase();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return res.status(400).json({ ok: false, error: "Enter a valid email." });
       await sendPreview(to);
+      return res.status(200).json({ ok: true });
+    }
+    if (req.method === "POST" && action === "update") {
+      const id = String(body.id || "");
+      if (!/^[0-9a-f-]{36}$/.test(id)) return res.status(400).json({ ok: false, error: "Unknown lead." });
+      const patch = {};
+      if (body.status !== undefined) {
+        if (!STATUSES.includes(body.status)) return res.status(400).json({ ok: false, error: "Unknown status." });
+        patch.status = body.status;
+      }
+      if (body.notes !== undefined) patch.notes = String(body.notes).slice(0, 2000) || null;
+      if (!Object.keys(patch).length) return res.status(400).json({ ok: false, error: "Nothing to update." });
+      const rows = await db(`leads?id=eq.${id}`, { method: "PATCH", body: patch, prefer: "return=representation" });
+      if (!rows.length) return res.status(404).json({ ok: false, error: "Unknown lead." });
       return res.status(200).json({ ok: true });
     }
   } catch (e) {
