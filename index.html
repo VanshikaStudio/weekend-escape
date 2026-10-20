@@ -1018,7 +1018,9 @@ function gateHTML() {
           <input id="f-school" name="school" type="text" placeholder="HEC, Sorbonne, Erasmus…"></div>
       </div>
       <label class="consent"><input type="checkbox" name="consent" required>
-        <span>I agree to receive my itinerary and travel deals by email. I can unsubscribe anytime.</span></label>
+        <span>Send me my full itinerary by email.</span></label>
+      <label class="consent"><input type="checkbox" name="marketing">
+        <span>Also send me occasional cheap-ticket alerts from Paris (optional). I can unsubscribe anytime.</span></label>
       <input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true"
         style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <p class="form-err" id="form-err" role="alert"></p>
@@ -1092,6 +1094,7 @@ function onSubmit(ev) {
     firstName: form.firstName.value.trim(),
     school: form.school.value.trim(),
     consent: true,
+    marketing: form.marketing.checked,
     destination: { id: lastData.best.d.id, city: lastData.best.d.city, total: lastData.best.total },
     answers: { ...answers },
     website: form.website.value,

@@ -37,6 +37,7 @@ module.exports = async (req, res) => {
     email,
     name: clean(body.firstName, 80) || null,
     consent: true,
+    marketing_consent: body.marketing === true,
     answers: {
       school: clean(body.school, 120) || null,
       budget: BUDGETS[budgetMax],

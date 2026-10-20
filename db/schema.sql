@@ -16,6 +16,10 @@ create table if not exists leads (
   unsubscribed_at timestamptz   -- set when the lead opts out; never email them again
 );
 
+-- consent = itinerary + follow-up emails (required box).
+-- marketing_consent = optional cheap-ticket alerts (separate, unticked box).
+alter table leads add column if not exists marketing_consent boolean not null default false;
+
 -- One lead per email address: a second quiz updates the same row.
 -- The server saves emails in lowercase, so a plain unique constraint is enough.
 drop index if exists leads_email_unique;
