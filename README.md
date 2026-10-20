@@ -36,6 +36,12 @@ locally, inject them into the process without writing files or exposing values.
 Do not use `vercel env pull`. No credentials are needed for the current stage.
 
 The form still simulates submission: no lead is stored and no email is sent.
-Supabase, Gmail, admin authentication, and scheduled follow-ups are later stages.
+The Supabase schema and its verification instructions are in
+[`supabase/README.md`](supabase/README.md). Apply it to the intended development
+Supabase project before connecting the form. Run `npm run test:database` with
+Python 3 and Docker available to test the migration in a disposable PostgreSQL
+17 container. This test never connects to Supabase or uses real credentials.
+
+Gmail, admin authentication, and scheduled follow-ups are later stages.
 Health reports only that the function runs; it does not check those services.
 No cron schedule or email dependencies are enabled yet.

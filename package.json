@@ -5,6 +5,7 @@
   "engines": { "node": "24.x" },
   "scripts": {
     "build": "node scripts/build.js",
-    "dev": "node scripts/dev.js"
+    "dev": "node scripts/dev.js",
+    "test:database": "python3 scripts/test-database.py"
   }
 }
