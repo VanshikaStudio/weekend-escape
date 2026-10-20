@@ -1,5 +1,7 @@
-// POST /api/lead · saves a lead from the email gate into Supabase.
+// POST /api/lead · saves a lead from the email gate into Supabase, then sends Email 1.
 // The browser only talks to this route; the service role key stays on the server.
+const { db } = require("../lib/db");
+const { sendEmail1 } = require("../lib/mail");
 
 const BUDGETS = { 100: "under-100", 150: "100-150", 250: "150-250", 450: "250+" };
 const TRANSPORTS = ["train", "plane", "either"];
@@ -52,27 +54,26 @@ module.exports = async (req, res) => {
     },
   };
 
-  const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    console.error("lead: Supabase variables missing");
-    return res.status(500).json({ ok: false, error: "Server not configured." });
+  // Upsert on email: a second quiz updates the same lead and keeps its status.
+  let saved;
+  try {
+    [saved] = await db("leads?on_conflict=email", {
+      method: "POST",
+      body: lead,
+      prefer: "resolution=merge-duplicates,return=representation",
+    });
+  } catch (e) {
+    console.error("lead: save failed", e.message);
+    return res.status(502).json({ ok: false, error: "Could not save right now. Please try again." });
   }
 
-  // Upsert on email: a second quiz updates the same lead and keeps its status.
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/leads?on_conflict=email`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_SERVICE_ROLE_KEY,
-      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "resolution=merge-duplicates,return=minimal",
-    },
-    body: JSON.stringify(lead),
-  });
-
-  if (!r.ok) {
-    console.error("lead: Supabase error", r.status, await r.text());
-    return res.status(502).json({ ok: false, error: "Could not save right now. Please try again." });
+  // Email 1 goes out once per lead (only while status is 'new'). A send error doesn't
+  // fail the form: the lead is saved and the itinerary is already on screen.
+  try {
+    const r = await sendEmail1(saved);
+    if (r.sent) console.log("lead: email 1 sent", saved.id);
+  } catch (e) {
+    console.error("lead: email 1 failed", saved.id, e.message);
   }
   return res.status(200).json({ ok: true });
 };

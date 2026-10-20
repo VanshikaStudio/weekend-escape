@@ -538,7 +538,7 @@ a { color: inherit; }
           </details>
           <details>
             <summary>What do you do with my email?</summary>
-            <p>We use it to send your itinerary and cheap ticket alerts, nothing else. One click to unsubscribe, and we never sell your data.</p>
+            <p>We use it to send your itinerary and one follow-up, plus cheap ticket alerts only if you tick that box. One click to unsubscribe, and we never sell your data.</p>
           </details>
           <details>
             <summary>Is this real AI?</summary>
@@ -581,7 +581,7 @@ a { color: inherit; }
         <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a><a href="#">Instagram</a><a href="#">TikTok</a>
       </nav>
     </div>
-    <p class="wrap fine foot__priv">Privacy: we only use your email to send your itinerary and travel deals. Unsubscribe anytime. This demo stores no data.</p>
+    <p class="wrap fine foot__priv">Privacy: we only use your email to send your itinerary, one follow-up and, if you opted in, cheap ticket alerts. Unsubscribe anytime.</p>
   </footer>
 
   <canvas id="confetti" aria-hidden="true"></canvas>
@@ -1006,8 +1006,8 @@ function ticketHTML(r, data) {
 
 function gateHTML() {
   return `<section class="gate" id="gate" aria-labelledby="gate-t">
-    <h4 id="gate-t">Get the full itinerary + cheap ticket alerts</h4>
-    <p>Free. We send the whole plan and ping you when prices drop.</p>
+    <h4 id="gate-t">Get your full itinerary</h4>
+    <p>Free. We email you the whole plan, day by day.</p>
     <form class="form" id="lead-form" novalidate>
       <div class="field"><label for="f-email">Email</label>
         <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="you@school.edu"></div>

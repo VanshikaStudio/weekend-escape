@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Admin · Weekend Escape</title>
+<style>
+:root { --cream: #FFF3E4; --paper: #FFFCF7; --ink: #231B2E; --ink-soft: #5B5167; --coral: #FF5C4D; --sun: #FFB92E; --mint: #1FB89A; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--cream); color: var(--ink); font: 15px/1.45 Arial, sans-serif; padding: 24px 16px; }
+.wrap { max-width: 1100px; margin: 0 auto; }
+h1 { margin: 0 0 4px; font-size: 26px; }
+.muted { color: var(--ink-soft); }
+.card { background: var(--paper); border: 2px solid var(--ink); border-radius: 14px; box-shadow: 4px 4px 0 var(--ink); padding: 18px; margin: 16px 0; }
+button, input { font: inherit; }
+input { border: 2px solid var(--ink); border-radius: 10px; padding: 9px 12px; background: #fff; min-width: 0; }
+button { border: 2px solid var(--ink); border-radius: 10px; padding: 9px 16px; background: var(--coral); color: #fff; font-weight: 700; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); }
+button.ghost { background: var(--paper); color: var(--ink); }
+button:disabled { opacity: .6; cursor: wait; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.stat { background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 10px; }
+.stat b { display: block; font-size: 22px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eadfd2; white-space: nowrap; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 12px; font-weight: 700; background: #eee; }
+.s-new { background: #E8E3EE; } .s-contacted { background: #FFE3B8; } .s-followed_up { background: #FFD9C2; }
+.s-replied, .s-meeting, .s-won { background: #C8F0E4; } .s-lost { background: #F3D0CC; }
+.test td { opacity: .5; }
+.msg { margin: 10px 0 0; min-height: 1.4em; }
+.err { color: #C0392B; }
+pre { background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 10px; white-space: pre-wrap; margin: 10px 0 0; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Weekend Escape · Admin</h1>
+  <p class="muted">Leads, emails and the follow-up robot.</p>
+
+  <section class="card" id="login">
+    <form class="row" id="login-form">
+      <input type="password" name="password" placeholder="Admin password" autocomplete="current-password" required>
+      <button type="submit">Log in</button>
+    </form>
+    <p class="msg err" id="login-msg" role="alert"></p>
+  </section>
+
+  <div id="app" hidden>
+    <section class="card">
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <section class="card">
+      <h2 style="margin:0 0 6px;font-size:18px">Follow-up robot</h2>
+      <p class="muted" style="margin:0 0 10px">Runs every day at 07:00 UTC. Checks replies, then sends one follow-up to leads with no reply after FOLLOW_UP_DAYS.</p>
+      <div class="row">
+        <button id="robot">Run robot now</button>
+        <button class="ghost" id="refresh">Refresh leads</button>
+        <button class="ghost" id="logout">Log out</button>
+      </div>
+      <pre id="robot-out" hidden></pre>
+    </section>
+
+    <section class="card">
+      <h2 style="margin:0 0 6px;font-size:18px">Preview the emails</h2>
+      <p class="muted" style="margin:0 0 10px">Sends Email 1 and the follow-up (sample trip: Lille) to a test address. Nothing is saved.</p>
+      <form class="row" id="preview-form">
+        <input type="email" name="to" placeholder="your-own@address.com" required>
+        <button type="submit">Send preview</button>
+      </form>
+      <p class="msg" id="preview-msg" role="status"></p>
+    </section>
+
+    <section class="card">
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th>Created</th><th>Email</th><th>Name</th><th>School</th><th>Trip</th><th>Answers</th>
+            <th>Status</th><th>Alerts</th><th>Emails out/in</th><th>Last email</th>
+          </tr></thead>
+          <tbody id="leads"></tbody>
+        </table>
+      </div>
+      <p class="muted" id="empty" hidden>No leads yet.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const when = (d) => (d ? new Date(d).toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" }) : "–");
+const isTest = (e) => /(^test\d*@|@example\.(com|org|net)$)/i.test(e);
+
+async function api(action, { method = "GET", body } = {}) {
+  const r = await fetch(`/api/admin?action=${action}`, {
+    method, headers: body ? { "Content-Type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await r.json().catch(() => ({ ok: false, error: "Server error" }));
+  if (r.status === 401 && action !== "login") showLogin();
+  if (!data.ok) throw new Error(data.error || "Something went wrong");
+  return data;
+}
+
+function showLogin() { $("#login").hidden = false; $("#app").hidden = true; }
+
+async function loadLeads() {
+  const { leads } = await api("leads");
+  $("#login").hidden = true; $("#app").hidden = false;
+  const real = leads.filter((l) => !isTest(l.email));
+  const count = (s) => real.filter((l) => l.status === s).length;
+  $("#stats").innerHTML = [
+    ["Leads", real.length], ["New", count("new")], ["Contacted", count("contacted")],
+    ["Followed up", count("followed_up")], ["Replied", count("replied")],
+    ["Alerts opt-in", real.filter((l) => l.marketing_consent && !l.unsubscribed_at).length],
+    ["Unsubscribed", real.filter((l) => l.unsubscribed_at).length],
+  ].map(([t, n]) => `<div class="stat"><b>${n}</b>${t}</div>`).join("");
+
+  $("#empty").hidden = leads.length > 0;
+  $("#leads").innerHTML = leads.map((l) => {
+    const a = l.answers || {}, d = a.destination || {};
+    const out = (l.emails || []).filter((e) => e.direction === "out").length;
+    const inn = (l.emails || []).length - out;
+    return `<tr class="${isTest(l.email) ? "test" : ""}">
+      <td>${when(l.created_at)}</td><td>${esc(l.email)}${isTest(l.email) ? " <span class='pill'>test</span>" : ""}</td>
+      <td>${esc(l.name || "–")}</td><td>${esc(a.school || "–")}</td>
+      <td>${esc(d.city || "–")}${d.estimatedTotal ? " · €" + esc(d.estimatedTotal) : ""}</td>
+      <td>${esc(a.budget || "")} · ${esc(a.transport || "")} · ${esc(a.vibe || "")}</td>
+      <td><span class="pill s-${esc(l.status)}">${esc(l.status)}</span>${l.unsubscribed_at ? " <span class='pill'>unsubscribed</span>" : ""}</td>
+      <td>${l.marketing_consent ? "yes" : "no"}</td><td>${out} / ${inn}</td><td>${when(l.last_email_at)}</td></tr>`;
+  }).join("");
+}
+
+$("#login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("#login-msg").textContent = "";
+  try {
+    await api("login", { method: "POST", body: { password: e.target.password.value } });
+    e.target.reset();
+    await loadLeads();
+  } catch (err) { $("#login-msg").textContent = err.message; }
+});
+
+$("#robot").addEventListener("click", async (e) => {
+  const btn = e.currentTarget, out = $("#robot-out");
+  btn.disabled = true; btn.textContent = "Running…"; out.hidden = false; out.textContent = "Checking the inbox…";
+  try {
+    const { summary: s } = await api("robot", { method: "POST" });
+    out.textContent = `Leads checked: ${s.checked}\nReplies found: ${s.repliesFound}\nFollow-ups sent: ${s.followUpsSent}\nErrors: ${s.errors.length ? "\n- " + s.errors.join("\n- ") : "none"}`;
+    await loadLeads();
+  } catch (err) { out.textContent = "Error: " + err.message; }
+  btn.disabled = false; btn.textContent = "Run robot now";
+});
+
+$("#preview-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = $("#preview-msg"), btn = e.target.querySelector("button");
+  btn.disabled = true; msg.className = "msg"; msg.textContent = "Sending…";
+  try {
+    await api("preview", { method: "POST", body: { to: e.target.to.value } });
+    msg.textContent = "Sent! Check that inbox (and its spam folder).";
+  } catch (err) { msg.className = "msg err"; msg.textContent = err.message; }
+  btn.disabled = false;
+});
+
+$("#refresh").addEventListener("click", () => loadLeads().catch(() => {}));
+$("#logout").addEventListener("click", async () => { await api("logout", { method: "POST" }).catch(() => {}); showLogin(); });
+
+loadLeads().catch(() => showLogin());
+</script>
+</body>
+</html>

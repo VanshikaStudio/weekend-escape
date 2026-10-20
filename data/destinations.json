@@ -1,0 +1,587 @@
+{
+  "_note": "Static demo data. All prices are rough ESTIMATES in EUR (round trip from Paris, booked a few weeks ahead, hostel dorm / budget stay, 2 nights, food = total for the weekend). Replace with live APIs later.",
+  "origin": "Paris",
+  "nights": 2,
+  "destinations": [
+    {
+      "id": "lille",
+      "city": "Lille",
+      "country": "France",
+      "emoji": "🧇",
+      "tagline": "Student capital of the north. Waffles, cheap beers, big Flemish squares.",
+      "colors": [
+        "#FFB92E",
+        "#FF7A45"
+      ],
+      "transport": [
+        {
+          "mode": "train",
+          "duration": "1h",
+          "price": 20
+        }
+      ],
+      "stay_per_night": 22,
+      "food": 35,
+      "vibe": {
+        "chill": 3,
+        "culture": 3,
+        "party": 4
+      },
+      "plan": {
+        "friday": [
+          "Train after class, check in near Gare Lille-Flandres.",
+          "Fries and a pint on Rue Masséna."
+        ],
+        "saturday": [
+          "Wander Vieux-Lille, grab a waffle at Meert.",
+          "Palais des Beaux-Arts, one of France's biggest art museums.",
+          "Rue Solférino, where every Lille student ends up by midnight."
+        ],
+        "sunday": [
+          "Brunch and bargains at the Wazemmes market.",
+          "Train home by 6pm, back in Paris for dinner."
+        ]
+      }
+    },
+    {
+      "id": "brussels",
+      "city": "Brussels",
+      "country": "Belgium",
+      "emoji": "🍫",
+      "tagline": "Chocolate, comics and a Grand-Place that looks like a movie set.",
+      "colors": [
+        "#FFC93C",
+        "#E8412F"
+      ],
+      "transport": [
+        {
+          "mode": "train",
+          "duration": "1h20",
+          "price": 35
+        }
+      ],
+      "stay_per_night": 28,
+      "food": 45,
+      "vibe": {
+        "chill": 2,
+        "culture": 4,
+        "party": 3
+      },
+      "plan": {
+        "friday": [
+          "Thalys/Eurostar after class, 1h20 door to door.",
+          "Fries at Maison Antoine, beers at Delirium."
+        ],
+        "saturday": [
+          "Grand-Place and the Manneken Pis (yes, it's small).",
+          "Comic strip murals walk + Magritte Museum.",
+          "Saint-Géry bars, packed with Erasmus students."
+        ],
+        "sunday": [
+          "Flea market at Place du Jeu de Balle.",
+          "Chocolate stop, then train home."
+        ]
+      }
+    },
+    {
+      "id": "ghent",
+      "city": "Ghent",
+      "country": "Belgium",
+      "emoji": "🏰",
+      "tagline": "Bruges' cooler, cheaper cousin. Medieval canals, student bars.",
+      "colors": [
+        "#FF9E7A",
+        "#B45FD6"
+      ],
+      "transport": [
+        {
+          "mode": "train",
+          "duration": "2h30",
+          "price": 45
+        }
+      ],
+      "stay_per_night": 30,
+      "food": 45,
+      "vibe": {
+        "chill": 4,
+        "culture": 4,
+        "party": 3
+      },
+      "plan": {
+        "friday": [
+          "Train via Brussels, drop bags in the centre.",
+          "Dinner at a canal-side student spot."
+        ],
+        "saturday": [
+          "Gravensteen castle and the Graslei quay.",
+          "Cuberdon candy and a Mokatine coffee break.",
+          "Bars around Oudburg, locals and students mixed."
+        ],
+        "sunday": [
+          "Slow brunch by the Leie river.",
+          "Short walk in Citadelpark, then head home."
+        ]
+      }
+    },
+    {
+      "id": "bruges",
+      "city": "Bruges",
+      "country": "Belgium",
+      "emoji": "🚲",
+      "tagline": "Fairy-tale canals and zero rush. The ultimate recharge weekend.",
+      "colors": [
+        "#FFD9A0",
+        "#2EB8A0"
+      ],
+      "transport": [
+        {
+          "mode": "train",
+          "duration": "2h40",
+          "price": 48
+        }
+      ],
+      "stay_per_night": 32,
+      "food": 50,
+      "vibe": {
+        "chill": 5,
+        "culture": 4,
+        "party": 1
+      },
+      "plan": {
+        "friday": [
+          "Train via Brussels, check in a canal-side hostel.",
+          "Quiet dinner and a night walk, the lights are unreal."
+        ],
+        "saturday": [
+          "Climb the Belfry for the view.",
+          "Canal boat tour or rent a bike to the windmills.",
+          "Belgian beer tasting at De Halve Maan."
+        ],
+        "sunday": [
+          "Chocolate workshop, then the Begijnhof beguinage.",
+          "Train home with a very full tote bag."
+        ]
+      }
+    },
+    {
+      "id": "strasbourg",
+      "city": "Strasbourg",
+      "country": "France",
+      "emoji": "🥨",
+      "tagline": "Half-timbered houses, tarte flambée and a Christmas-market energy all year.",
+      "colors": [
+        "#FF8A5C",
+        "#D13B63"
+      ],
+      "transport": [
+        {
+          "mode": "train",
+          "duration": "1h45",
+          "price": 55
+        }
+      ],
+      "stay_per_night": 30,
+      "food": 45,
+      "vibe": {
+        "chill": 4,
+        "culture": 4,
+        "party": 2
+      },
+      "plan": {
+        "friday": [
+          "TGV from Gare de l'Est, 1h45 and you're there.",
+          "Tarte flambée and a local Alsatian beer."
+        ],
+        "saturday": [
+          "Cathedral, then a boat ride around the Grande Île.",
+          "Petite France quarter, perfect for photos.",
+          "Winstub dinner, then bars in the Krutenau."
+        ],
+        "sunday": [
+          "Brunch, a stroll in Parc de l'Orangerie.",
+          "Afternoon TGV home."
+        ]
+      }
+    },
+    {
+      "id": "cologne",
+      "city": "Cologne",
+      "country": "Germany",
+      "emoji": "🍺",
+      "tagline": "A giant cathedral, tiny glasses of Kölsch, and a very friendly city.",
+      "colors": [
+        "#FFB92E",
+        "#7C4DFF"
+      ],
+      "transport": [
+        {
+          "mode": "train",
+          "duration": "3h15",
+          "price": 60
+        }
+      ],
+      "stay_per_night": 32,
+      "food": 50,
+      "vibe": {
+        "chill": 2,
+        "culture": 4,
+        "party": 4
+      },
+      "plan": {
+        "friday": [
+          "Thalys from Gare du Nord, straight to the Altstadt.",
+          "First Kölsch (they keep refilling it, say stop)."
+        ],
+        "saturday": [
+          "Climb the Cathedral towers.",
+          "Chocolate museum or Ludwig Museum.",
+          "Belgisches Viertel bars and street food."
+        ],
+        "sunday": [
+          "Walk the Rhine promenade.",
+          "Hohenzollern bridge love locks, then train home."
+        ]
+      }
+    },
+    {
+      "id": "amsterdam",
+      "city": "Amsterdam",
+      "country": "Netherlands",
+      "emoji": "🌷",
+      "tagline": "Canals, bikes, museums and a nightlife that never asks for ID twice.",
+      "colors": [
+        "#FF7A45",
+        "#FFC93C"
+      ],
+      "transport": [
+        {
+          "mode": "train",
+          "duration": "3h20",
+          "price": 70
+        },
+        {
+          "mode": "plane",
+          "duration": "1h15",
+          "price": 80
+        }
+      ],
+      "stay_per_night": 45,
+      "food": 60,
+      "vibe": {
+        "chill": 3,
+        "culture": 5,
+        "party": 4
+      },
+      "plan": {
+        "friday": [
+          "Thalys to Centraal, tram to your hostel.",
+          "Dinner in De Pijp, then a canal-side drink."
+        ],
+        "saturday": [
+          "Rijksmuseum or Van Gogh (book the student slot).",
+          "Rent a bike, ride through Vondelpark.",
+          "Rembrandtplein for the night out."
+        ],
+        "sunday": [
+          "Albert Cuyp market and fresh stroopwafels.",
+          "Last coffee, then train home."
+        ]
+      }
+    },
+    {
+      "id": "london",
+      "city": "London",
+      "country": "United Kingdom",
+      "emoji": "🚇",
+      "tagline": "Free museums, endless neighbourhoods, and pints that hurt (a bit).",
+      "colors": [
+        "#E8412F",
+        "#3D2E6B"
+      ],
+      "transport": [
+        {
+          "mode": "train",
+          "duration": "2h20",
+          "price": 90
+        },
+        {
+          "mode": "plane",
+          "duration": "1h15",
+          "price": 100
+        }
+      ],
+      "stay_per_night": 50,
+      "food": 70,
+      "vibe": {
+        "chill": 1,
+        "culture": 5,
+        "party": 4
+      },
+      "plan": {
+        "friday": [
+          "Eurostar from Gare du Nord, 2h20 and you're at St Pancras.",
+          "Street food at Borough Market, pint in a proper pub."
+        ],
+        "saturday": [
+          "British Museum and the Tate Modern, both free.",
+          "Walk the South Bank to Tower Bridge.",
+          "Shoreditch or Camden for the night."
+        ],
+        "sunday": [
+          "Portobello or Brick Lane market.",
+          "Quick sunset at Primrose Hill, then Eurostar home."
+        ]
+      }
+    },
+    {
+      "id": "barcelona",
+      "city": "Barcelona",
+      "country": "Spain",
+      "emoji": "🏖️",
+      "tagline": "Beach by day, tapas by night, Gaudí in between.",
+      "colors": [
+        "#FFB92E",
+        "#FF5C4D"
+      ],
+      "transport": [
+        {
+          "mode": "plane",
+          "duration": "2h",
+          "price": 60
+        },
+        {
+          "mode": "train",
+          "duration": "6h30",
+          "price": 90
+        }
+      ],
+      "stay_per_night": 25,
+      "food": 50,
+      "vibe": {
+        "chill": 4,
+        "culture": 4,
+        "party": 5
+      },
+      "plan": {
+        "friday": [
+          "Evening flight, metro straight to a hostel in El Born.",
+          "Late tapas, because dinner starts at 10pm here."
+        ],
+        "saturday": [
+          "Sagrada Família, book a morning slot.",
+          "Beach afternoon at Barceloneta.",
+          "Sunset at Bunkers del Carmel, then the Gothic Quarter."
+        ],
+        "sunday": [
+          "Brunch and Parc Güell, free access in early hours.",
+          "Evening flight home."
+        ]
+      }
+    },
+    {
+      "id": "lisbon",
+      "city": "Lisbon",
+      "country": "Portugal",
+      "emoji": "🚋",
+      "tagline": "Yellow trams, custard tarts and sunsets worth the flight alone.",
+      "colors": [
+        "#FFC93C",
+        "#FF6F61"
+      ],
+      "transport": [
+        {
+          "mode": "plane",
+          "duration": "2h30",
+          "price": 60
+        }
+      ],
+      "stay_per_night": 23,
+      "food": 45,
+      "vibe": {
+        "chill": 4,
+        "culture": 4,
+        "party": 4
+      },
+      "plan": {
+        "friday": [
+          "Flight after class, metro into Baixa.",
+          "Dinner and live fado in Alfama."
+        ],
+        "saturday": [
+          "Pastéis de Belém, then Belém Tower.",
+          "Tram 28 up to the Miradouros.",
+          "Bairro Alto bars, sunset drinks on a rooftop."
+        ],
+        "sunday": [
+          "Day trip to Sintra or lazy brunch at LX Factory.",
+          "Evening flight home."
+        ]
+      }
+    },
+    {
+      "id": "porto",
+      "city": "Porto",
+      "country": "Portugal",
+      "emoji": "🍷",
+      "tagline": "Tiled facades, river views and port wine tastings on a student budget.",
+      "colors": [
+        "#FF9E7A",
+        "#3EB6C8"
+      ],
+      "transport": [
+        {
+          "mode": "plane",
+          "duration": "2h20",
+          "price": 55
+        }
+      ],
+      "stay_per_night": 22,
+      "food": 45,
+      "vibe": {
+        "chill": 5,
+        "culture": 3,
+        "party": 4
+      },
+      "plan": {
+        "friday": [
+          "Flight, metro to Ribeira, hostel with a river view.",
+          "Francesinha for dinner (you'll nap after)."
+        ],
+        "saturday": [
+          "Livraria Lello and the São Bento tiles.",
+          "Port wine cellar tasting across the bridge in Gaia.",
+          "Rua Galeria de Paris, the bar street."
+        ],
+        "sunday": [
+          "Brunch, then a stroll along the Douro.",
+          "Evening flight home."
+        ]
+      }
+    },
+    {
+      "id": "rome",
+      "city": "Rome",
+      "country": "Italy",
+      "emoji": "🍝",
+      "tagline": "Two thousand years of history, and a very good carbonara.",
+      "colors": [
+        "#FF7A45",
+        "#8D3B72"
+      ],
+      "transport": [
+        {
+          "mode": "plane",
+          "duration": "2h10",
+          "price": 65
+        }
+      ],
+      "stay_per_night": 32,
+      "food": 55,
+      "vibe": {
+        "chill": 3,
+        "culture": 5,
+        "party": 3
+      },
+      "plan": {
+        "friday": [
+          "Flight, Leonardo Express to Termini.",
+          "Cacio e pepe in Trastevere."
+        ],
+        "saturday": [
+          "Colosseum and Forum, book the early slot.",
+          "Pantheon, Trevi (coin ready), gelato.",
+          "Aperitivo then a night walk by the Tiber."
+        ],
+        "sunday": [
+          "Vatican Museums (free last Sunday of month) or Villa Borghese.",
+          "Evening flight home."
+        ]
+      }
+    },
+    {
+      "id": "prague",
+      "city": "Prague",
+      "country": "Czechia",
+      "emoji": "🌉",
+      "tagline": "Fairy-tale skyline and some of Europe's cheapest beer.",
+      "colors": [
+        "#B45FD6",
+        "#FF8A5C"
+      ],
+      "transport": [
+        {
+          "mode": "plane",
+          "duration": "1h50",
+          "price": 60
+        }
+      ],
+      "stay_per_night": 18,
+      "food": 40,
+      "vibe": {
+        "chill": 2,
+        "culture": 4,
+        "party": 5
+      },
+      "plan": {
+        "friday": [
+          "Flight, bus 119 plus metro to the Old Town.",
+          "Trdelník, then a pub that's older than your country."
+        ],
+        "saturday": [
+          "Charles Bridge at sunrise before the crowds.",
+          "Prague Castle and Golden Lane.",
+          "Beer garden at Letná, then club night."
+        ],
+        "sunday": [
+          "Brunch in Vinohrady.",
+          "Evening flight home."
+        ]
+      }
+    },
+    {
+      "id": "berlin",
+      "city": "Berlin",
+      "country": "Germany",
+      "emoji": "🎧",
+      "tagline": "History, street art and clubs that open Saturday and close Monday.",
+      "colors": [
+        "#3D2E6B",
+        "#FF5C4D"
+      ],
+      "transport": [
+        {
+          "mode": "plane",
+          "duration": "1h50",
+          "price": 60
+        },
+        {
+          "mode": "train",
+          "duration": "8h",
+          "price": 120
+        }
+      ],
+      "stay_per_night": 22,
+      "food": 50,
+      "vibe": {
+        "chill": 1,
+        "culture": 5,
+        "party": 5
+      },
+      "plan": {
+        "friday": [
+          "Flight, S-Bahn to Kreuzberg.",
+          "Döner at Mustafa's (the queue is the experience)."
+        ],
+        "saturday": [
+          "East Side Gallery and the Brandenburg Gate.",
+          "Museum Island or Topography of Terror.",
+          "Club night (practise your 'we're just here for the music' face)."
+        ],
+        "sunday": [
+          "Flea market at Mauerpark.",
+          "Last currywurst, then evening flight."
+        ]
+      }
+    }
+  ]
+}

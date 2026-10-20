@@ -1,0 +1,9 @@
+{
+  "name": "weekend-escape",
+  "private": true,
+  "description": "Weekend Escape lead magnet: static page + Vercel Functions in /api",
+  "dependencies": {
+    "imapflow": "^1.0.0",
+    "nodemailer": "^6.9.0"
+  }
+}
