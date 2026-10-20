@@ -11,7 +11,7 @@
 
 ### Current website and scope
 
-- Start from the existing `weekend-escape.html` landing page; preserve its visual design, quiz, destination cards, recommendation logic, estimated-price disclosures and email-gated itinerary.
+- Start from the existing `index.html` landing page; preserve its visual design, quiz, destination cards, recommendation logic, estimated-price disclosures and email-gated itinerary.
 - The current recommendation engine is **rules-based on curated destination data**, not a live-price search or an LLM. Do not represent estimates as live prices or simulated operations as completed actions.
 - The current `submitLead()` is a simulated delay. Replace it with a real call to a server endpoint; only unlock after a successful server response, with clear error and retry states.
 - The first implementation should connect the existing page to a server, Supabase and the agreed email workflow. Do not add live booking APIs, an LLM, paid products or new services without asking.
