@@ -798,8 +798,8 @@ const CONFIG = {
   siteName: "Weekend Escape",
   // FICTIONAL social proof: replace with a real number before any real launch.
   socialProof: "Join 1,200+ Paris students already planning their next escape",
-  // Where to send emails later. See submitLead() below.
-  formEndpoint: null,
+  // Our server route that saves leads. See submitLead() below.
+  formEndpoint: "/api/lead",
   thinkingMs: 2000, // length of the "agent is thinking" animation
 };
 
@@ -1019,6 +1019,8 @@ function gateHTML() {
       </div>
       <label class="consent"><input type="checkbox" name="consent" required>
         <span>I agree to receive my itinerary and travel deals by email. I can unsubscribe anytime.</span></label>
+      <input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true"
+        style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <p class="form-err" id="form-err" role="alert"></p>
       <button class="btn" type="submit">Unlock my weekend 🔓</button>
     </form></section>`;
@@ -1073,7 +1075,7 @@ function restart() {
   $("#quiz-box").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
 }
 
-/* ---------- 7. EMAIL GATE (simulated) ---------- */
+/* ---------- 7. EMAIL GATE ---------- */
 function onSubmit(ev) {
   ev.preventDefault();
   const form = ev.target;
@@ -1090,29 +1092,38 @@ function onSubmit(ev) {
     firstName: form.firstName.value.trim(),
     school: form.school.value.trim(),
     consent: true,
-    destination: lastData.best.d.id,
+    destination: { id: lastData.best.d.id, city: lastData.best.d.city, total: lastData.best.total },
     answers: { ...answers },
+    website: form.website.value,
   };
   submitLead(lead).then(() => {
     $("#locked").classList.add("open");
     $("#locked").querySelectorAll("[aria-hidden]").forEach((n) => n.removeAttribute("aria-hidden"));
     $("#gate-slot").innerHTML = `<div class="gate"><div class="success" role="status">
       <b>You're in${lead.firstName ? ", " + esc(lead.firstName) : ""}! 🎉</b>
-      Your full itinerary is unlocked above. (Demo: nothing was actually sent or stored.)</div></div>`;
+      Your full itinerary is unlocked above.</div></div>`;
     $("#locked").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
     celebrate();
+  }).catch((e) => {
+    err.textContent = e.message;
+    btn.disabled = false; btn.textContent = "Try again 🔁";
   });
 }
 
-/* TODO (production): plug your email provider here.
-   Option A, Netlify Forms: add a hidden static form to index.html
-     <form name="leads" data-netlify="true" hidden> <input name="email"> ... </form>
-     then POST "form-name=leads&email=..." (urlencoded) to "/" with fetch.
-   Option B, provider (Mailchimp / Brevo / Buttondown...): POST `lead` to their
-     form endpoint or a serverless function (never put secret keys in this file).
-   Set CONFIG.formEndpoint and replace the fake delay below. */
-function submitLead(lead) {
-  return new Promise((resolve) => setTimeout(resolve, 700)); // simulated network
+// Saves the lead through our server route (api/lead.js). Resolves only on success.
+async function submitLead(lead) {
+  let r;
+  try {
+    r = await fetch(CONFIG.formEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(lead),
+    });
+  } catch {
+    throw new Error("No connection. Check your internet and try again.");
+  }
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok || !data.ok) throw new Error(data.error || "Something went wrong. Please try again.");
 }
 
 /* ---------- 8. CONFETTI (small, discrete) ---------- */

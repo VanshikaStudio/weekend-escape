@@ -17,7 +17,11 @@ create table if not exists leads (
 );
 
 -- One lead per email address: a second quiz updates the same row.
-create unique index if not exists leads_email_unique on leads (lower(email));
+-- The server saves emails in lowercase, so a plain unique constraint is enough.
+drop index if exists leads_email_unique;
+do $$ begin
+  alter table leads add constraint leads_email_key unique (email);
+exception when duplicate_table or duplicate_object then null; end $$;
 
 create table if not exists emails (
   id uuid primary key default gen_random_uuid(),
