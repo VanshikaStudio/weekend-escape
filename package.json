@@ -3,6 +3,7 @@
   "private": true,
   "description": "Weekend Escape lead magnet: static page + Vercel Functions in /api",
   "dependencies": {
+    "@vercel/functions": "^2.2.13",
     "imapflow": "^1.0.0",
     "nodemailer": "^6.9.0"
   },

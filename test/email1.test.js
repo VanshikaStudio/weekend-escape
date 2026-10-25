@@ -36,6 +36,21 @@ test("fallback: a Gemini HTTP error or a broken answer makes writeEmail1 throw",
   await assert.rejects(writeEmail1(lead, trip), /not set/);
 });
 
+test("backup model: if the main model is busy or slow, the backup model writes the email", async () => {
+  process.env.GEMINI_API_KEY = "test-key";
+  const trip = { d: { city: "Lille", country: "France" }, total: 99 };
+  const ok = geminiReply({ subject: "Lille for €99 🧇", body: "Hi Léa, Lille is a great party weekend by train." });
+  for (const firstFails of [async () => ({ ok: false, status: 503 }), async () => { throw new Error("aborted due to timeout"); }]) {
+    const urls = [];
+    const fetchFn = async (url, opts) => { urls.push(url); return urls.length === 1 ? firstFails() : ok(url, opts); };
+    const out = await writeEmail1(lead, trip, { fetchFn, retryDelayMs: 0 });
+    assert.equal(out.subject, "Lille for €99 🧇");
+    assert.match(urls[0], /gemini-3\.8-flash/);
+    assert.match(urls[1], /gemini-3\.6-flash/);
+  }
+  delete process.env.GEMINI_API_KEY;
+});
+
 test("Gemini path: its subject and text are used, our itinerary is added below", async () => {
   process.env.GEMINI_API_KEY = "test-key";
   const write = (l, t) => writeEmail1(l, t, {

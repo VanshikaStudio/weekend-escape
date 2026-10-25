@@ -1,6 +1,7 @@
 // POST /api/lead · saves a lead from the email gate into Supabase, then sends Email 1.
 // The browser only talks to this route; the service role key stays on the server.
 const { db } = require("../lib/db");
+const { waitUntil } = require("@vercel/functions");
 const { sendEmail1 } = require("../lib/mail");
 
 const BUDGETS = { 100: "under-100", 150: "100-150", 250: "150-250", 450: "250+" };
@@ -67,13 +68,13 @@ module.exports = async (req, res) => {
     return res.status(502).json({ ok: false, error: "Could not save right now. Please try again." });
   }
 
-  // Email 1 goes out once per lead (only while status is 'new'). A send error doesn't
-  // fail the form: the lead is saved and the itinerary is already on screen.
-  try {
-    const r = await sendEmail1(saved);
-    if (r.sent) console.log("lead: email 1 sent", saved.id, "written by", r.by);
-  } catch (e) {
-    console.error("lead: email 1 failed", saved.id, e.message);
-  }
+  // Email 1 goes out once per lead (only while status is 'new'), after we answer: the
+  // itinerary unlocks right away while Gemini writes and Gmail sends. waitUntil keeps the
+  // function alive until that's done. A send error doesn't fail the form: the lead is saved.
+  waitUntil(
+    sendEmail1(saved)
+      .then((r) => { if (r.sent) console.log("lead: email 1 sent", saved.id, "written by", r.by); })
+      .catch((e) => console.error("lead: email 1 failed", saved.id, e.message)),
+  );
   return res.status(200).json({ ok: true });
 };
