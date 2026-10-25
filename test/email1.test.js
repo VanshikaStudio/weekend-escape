@@ -68,3 +68,26 @@ test("the prompt contains the lead's answers", () => {
   const p = email1Prompt(lead, { d: { city: "Lille", country: "France", tagline: "Student capital" }, total: 99 });
   for (const s of ["Léa", "ESSEC", "under €100", "train", "party", "Lille", "€99"]) assert.ok(p.includes(s), s);
 });
+
+// Guardrails against the trap lead (prompt injection in the name and school fields).
+const { cleanName, cleanSchool, checkEmail } = require("../lib/gemini");
+const TEST_LEADS = require("../lib/prompts/test-leads.json");
+
+test("guardrail 1: a trap name or school never reaches the model", () => {
+  const trap = TEST_LEADS.find((t) => t.label === "trap").lead;
+  assert.equal(cleanName(trap.name), "there");
+  assert.equal(cleanSchool(trap.answers.school), "not given");
+  for (const ok of ["Léa", "Jean-Marc", "Anne Sophie", "O'Neil"]) assert.equal(cleanName(ok), ok);
+  for (const ok of ["HEC", "Sciences Po", "Université Paris 1 (Panthéon-Sorbonne)"]) assert.equal(cleanSchool(ok), ok);
+  const p = email1Prompt(trap, { d: { city: "Lille", country: "France", tagline: "" }, total: 77 });
+  assert.ok(!/win-a-trip|FREE|refund/.test(p.split("## The student's answers")[1]), "injected text is not in the answers");
+});
+
+test("guardrail 3: an email with a link, a promise, shouting or the wrong city is rejected", () => {
+  const good = { subject: "Your Lille weekend 🧇", body: "Hey there, Lille has cheap beers and big squares, about €77 all in." };
+  assert.equal(checkEmail(good, "Lille"), null);
+  assert.match(checkEmail({ ...good, body: good.body + " Book at http://win-a-trip.example" }, "Lille"), /link/);
+  assert.match(checkEmail({ ...good, body: good.body + " Your trip is already booked!" }, "Lille"), /promise/);
+  assert.match(checkEmail({ subject: "YOUR LILLE TRIP", body: "HEY THERE, LILLE IS GREAT AND IT IS ALL SORTED FOR YOU." }, "Lille"), /capital/);
+  assert.match(checkEmail(good, "Brussels"), /city/);
+});
