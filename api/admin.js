@@ -5,10 +5,12 @@
 //   POST robot              "Run robot now"
 //   POST preview {to}       sends both emails to a test address
 //   POST update {id, status?, notes?}   changes a lead's status or notes by hand
+//   POST samples            Email 1 for the 3 fixed test leads (good, vague, trap). Nothing is sent.
 const { db } = require("../lib/db");
 const { safeEqual, adminToken } = require("../lib/auth");
 const { runRobot } = require("../lib/robot");
-const { sendPreview } = require("../lib/mail");
+const { sendPreview, buildEmail1 } = require("../lib/mail");
+const TEST_LEADS = require("../lib/prompts/test-leads.json");
 
 const STATUSES = ["new", "contacted", "followed_up", "replied", "meeting", "won", "lost"];
 const COOKIE = "we_admin";
@@ -40,7 +42,7 @@ module.exports = async (req, res) => {
 
   try {
     if (req.method === "GET" && action === "leads") {
-      const leads = await db("leads?select=id,created_at,name,email,consent,marketing_consent,answers,status,notes,last_email_at,follow_ups,unsubscribed_at,emails(direction)&order=created_at.desc&limit=500");
+      const leads = await db("leads?select=id,created_at,name,email,consent,marketing_consent,answers,status,notes,score,score_reason,last_email_at,follow_ups,unsubscribed_at,emails(direction)&order=created_at.desc&limit=500");
       return res.status(200).json({ ok: true, leads });
     }
     if (req.method === "POST" && action === "robot") {
@@ -53,6 +55,13 @@ module.exports = async (req, res) => {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return res.status(400).json({ ok: false, error: "Enter a valid email." });
       await sendPreview(to);
       return res.status(200).json({ ok: true });
+    }
+    if (req.method === "POST" && action === "samples") {
+      const samples = await Promise.all(TEST_LEADS.map(async (t) => {
+        const e = await buildEmail1(t.lead);
+        return { label: t.label, by: e.by, subject: e.subject, opening: e.opening };
+      }));
+      return res.status(200).json({ ok: true, samples });
     }
     if (req.method === "POST" && action === "update") {
       const id = String(body.id || "");

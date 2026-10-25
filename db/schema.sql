@@ -42,3 +42,9 @@ create index if not exists emails_lead_id on emails (lead_id);
 -- No policy: only the server, with the service role key, can read or write.
 alter table leads enable row level security;
 alter table emails enable row level security;
+
+-- Lead score, written by the n8n workflow "Leads — Score new leads with AI" (Gemini).
+-- A = strong fit, B = maybe, C = not a fit (the robot sends C leads no follow-up).
+alter table leads add column if not exists score text check (score in ('A', 'B', 'C'));
+alter table leads add column if not exists score_reason text;
+alter table leads add column if not exists scored_at timestamptz;

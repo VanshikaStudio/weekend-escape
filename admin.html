@@ -30,6 +30,7 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: v
 .s-new { background: #E8E3EE; } .s-contacted { background: #FFE3B8; } .s-followed_up { background: #FFD9C2; }
 .s-replied, .s-meeting, .s-won { background: #C8F0E4; } .s-lost { background: #F3D0CC; }
 .test td { opacity: .5; }
+.sc-A { background: #C8F0E4; } .sc-B { background: #FFE3B8; } .sc-C { background: #F3D0CC; }
 select.pill { border: 1px solid #d8cbbd; cursor: pointer; font-family: inherit; }
 input.note { min-width: 180px; padding: 5px 8px; border-width: 1px; border-radius: 8px; font-size: 13px; }
 .msg { margin: 10px 0 0; min-height: 1.4em; }
@@ -82,7 +83,7 @@ pre { background: #fff; border: 2px solid var(--ink); border-radius: 10px; paddi
         <table>
           <thead><tr>
             <th>Created</th><th>Email</th><th>Name</th><th>School</th><th>Trip</th><th>Answers</th>
-            <th>Status</th><th>Notes</th><th>Alerts</th><th>Emails out/in</th><th>Last email</th>
+            <th>Score</th><th>Status</th><th>Notes</th><th>Alerts</th><th>Emails out/in</th><th>Last email</th>
           </tr></thead>
           <tbody id="leads"></tbody>
         </table>
@@ -119,6 +120,7 @@ async function loadLeads() {
   $("#stats").innerHTML = [
     ["Leads", real.length], ["New", count("new")], ["Contacted", count("contacted")],
     ["Followed up", count("followed_up")], ["Replied", count("replied")],
+    ["A leads", real.filter((l) => l.score === "A").length],
     ["Alerts opt-in", real.filter((l) => l.marketing_consent && !l.unsubscribed_at).length],
     ["Unsubscribed", real.filter((l) => l.unsubscribed_at).length],
   ].map(([t, n]) => `<div class="stat"><b>${n}</b>${t}</div>`).join("");
@@ -133,6 +135,7 @@ async function loadLeads() {
       <td>${esc(l.name || "–")}</td><td>${esc(a.school || "–")}</td>
       <td>${esc(d.city || "–")}${d.estimatedTotal ? " · €" + esc(d.estimatedTotal) : ""}</td>
       <td>${esc(a.budget || "")} · ${esc(a.transport || "")} · ${esc(a.vibe || "")}</td>
+      <td>${l.score ? `<span class="pill sc-${esc(l.score)}" title="${esc(l.score_reason || "")}">${esc(l.score)}</span> <small class="muted">${esc(l.score_reason || "")}</small>` : "<span class='muted'>–</span>"}</td>
       <td><select class="pill s-${esc(l.status)}" data-id="${esc(l.id)}" data-field="status" aria-label="Status">
         ${STATUSES.map((s) => `<option value="${s}"${s === l.status ? " selected" : ""}>${s}</option>`).join("")}
       </select>${l.unsubscribed_at ? " <span class='pill'>unsubscribed</span>" : ""}</td>
