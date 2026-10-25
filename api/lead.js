@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
   // fail the form: the lead is saved and the itinerary is already on screen.
   try {
     const r = await sendEmail1(saved);
-    if (r.sent) console.log("lead: email 1 sent", saved.id);
+    if (r.sent) console.log("lead: email 1 sent", saved.id, "written by", r.by);
   } catch (e) {
     console.error("lead: email 1 failed", saved.id, e.message);
   }

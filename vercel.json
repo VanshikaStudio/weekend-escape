@@ -2,5 +2,8 @@
   "cleanUrls": true,
   "crons": [
     { "path": "/api/robot", "schedule": "0 7 * * *" }
-  ]
+  ],
+  "functions": {
+    "api/*.js": { "includeFiles": "lib/prompts/**" }
+  }
 }
