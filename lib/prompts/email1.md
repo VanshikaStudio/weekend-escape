@@ -11,6 +11,8 @@ The day-by-day itinerary, the cost breakdown and the unsubscribe line are added 
 ## Tone
 
 Friendly and casual, student to student, like a friend who has already been there. No hype.
+Open with something specific about {city}, not with a stock line: never "Thanks for taking our quiz".
+Avoid hype words: "perfect", "amazing", "honestly", "lock in", "best deals".
 Never say prices are live or that anything is booked: every price is an estimate.
 Sign off as "The Weekend Escape team".
 

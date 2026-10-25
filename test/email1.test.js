@@ -66,5 +66,5 @@ test("Gemini path: its subject and text are used, our itinerary is added below",
 
 test("the prompt contains the lead's answers", () => {
   const p = email1Prompt(lead, { d: { city: "Lille", country: "France", tagline: "Student capital" }, total: 99 });
-  for (const s of ["Léa", "ESSEC", "under-100", "train", "party", "Lille", "€99"]) assert.ok(p.includes(s), s);
+  for (const s of ["Léa", "ESSEC", "under €100", "train", "party", "Lille", "€99"]) assert.ok(p.includes(s), s);
 });
