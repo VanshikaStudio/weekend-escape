@@ -3,6 +3,7 @@
 const { db } = require("../lib/db");
 const { waitUntil } = require("@vercel/functions");
 const { sendEmail1 } = require("../lib/mail");
+const { notifyNewLead } = require("../lib/n8n");
 
 const BUDGETS = { 100: "under-100", 150: "100-150", 250: "150-250", 450: "250+" };
 const TRANSPORTS = ["train", "plane", "either"];
@@ -75,6 +76,12 @@ module.exports = async (req, res) => {
     sendEmail1(saved)
       .then((r) => { if (r.sent) console.log("lead: email 1 sent", saved.id, "written by", r.by); })
       .catch((e) => console.error("lead: email 1 failed", saved.id, e.message)),
+  );
+  // n8n scores the lead (A/B/C) in parallel; its hourly check is the safety net.
+  waitUntil(
+    notifyNewLead(saved.id)
+      .then((r) => console.log("lead: n8n", r.sent ? "notified" : r.reason, saved.id))
+      .catch((e) => console.error("lead: n8n webhook failed", saved.id, e.message)),
   );
   return res.status(200).json({ ok: true });
 };
