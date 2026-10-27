@@ -342,6 +342,29 @@ a { color: inherit; }
   .faq details > p { display: block; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* Header button: short label on phones */
+.nav__cta-short { display: none; }
+@media (max-width: 520px) { .nav__cta-long { display: none; } .nav__cta-short { display: inline; } }
+
+/* What lands in your inbox */
+.inbox { display: grid; gap: 40px; align-items: center; }
+@media (min-width: 960px) { .inbox { grid-template-columns: 1fr 1.05fr; gap: 56px; } }
+.inbox__pts { list-style: none; padding: 0; margin: 0; display: grid; gap: 18px; }
+.inbox__pts li { display: grid; gap: 4px; }
+.inbox__pts span { color: var(--ink-soft); }
+.mail { margin: 0; padding: 0; overflow: hidden; transform: rotate(.6deg); }
+.mail__head { display: flex; align-items: center; gap: 12px; padding: 16px 22px; border-bottom: 2px solid var(--ink); background: #FFF0C2; }
+.mail__head b { display: block; } .mail__head small { color: var(--ink-soft); }
+.mail__av { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--ink); background: var(--coral); display: grid; place-items: center; font-size: 1.1rem; flex: none; }
+.mail__subj { margin: 0; padding: 16px 22px 0; font: 800 1.2rem/1.3 var(--display); }
+.mail__body { padding: 6px 22px 20px; font-size: .95rem; }
+.mail__body p { margin: 10px 0; }
+.mail__plan { display: grid; gap: 4px; margin: 14px 0; padding: 12px 14px; border: 2px dashed var(--ink); border-radius: 12px; background: var(--cream); font-size: .88rem; }
+.mail__days i { font-style: normal; font: 500 .75rem var(--mono); background: var(--ink); color: var(--cream); border-radius: 6px; padding: 1px 6px; }
+.mail__foot { font-size: .78rem; color: var(--ink-soft); border-top: 1px solid #eadfd2; padding-top: 10px; }
+.road--live { border-style: solid !important; background: #E3F7EF !important; }
+.road--live .road__n { background: var(--mint, #1FB89A); color: var(--ink); }
 </style>
 </head>
 <body>
@@ -358,7 +381,7 @@ a { color: inherit; }
         <a href="#agent">The AI agent</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="btn btn--sm" href="#quiz">Find my weekend</a>
+      <a class="btn btn--sm" href="#quiz"><span class="nav__cta-long">Find my weekend</span><span class="nav__cta-short">Start</span></a>
     </div>
   </header>
 
@@ -368,14 +391,13 @@ a { color: inherit; }
       <div class="sun" aria-hidden="true"></div>
       <div class="wrap hero__in">
         <div class="hero__copy">
-          <p class="eyebrow"><span class="dot"></span> For students in Paris · €100–250 budgets</p>
+          <p class="eyebrow"><span class="dot"></span> For students in Paris · From under €100</p>
           <h1>Escape Paris this weekend. <span class="hl">Not your budget.</span></h1>
           <p class="lead">A weekend trip from Paris that fits your budget, planned in 30 seconds.</p>
           <a class="btn btn--lg" href="#quiz">Find my weekend (30 sec) <span aria-hidden="true">→</span></a>
           <p class="proof">
             <span class="avatars" aria-hidden="true"><i>🧑‍🎓</i><i>👩‍🎓</i><i>🧑🏽‍🎓</i></span>
-            <!-- SOCIAL_PROOF: FICTIONAL number, edit in js/app.js (CONFIG.socialProof). Replace with a real count before launch. -->
-            <span data-social-proof>Loading…</span>
+            <span data-social-proof>Built by HEC students, for students in Paris</span>
           </p>
         </div>
 
@@ -404,13 +426,13 @@ a { color: inherit; }
             <span class="step__n">2</span>
             <svg viewBox="0 0 64 64" class="ill" aria-hidden="true"><rect x="8" y="16" width="48" height="32" rx="8" fill="#FF8A5C"/><circle cx="24" cy="32" r="5" fill="#FFF3E4"/><circle cx="40" cy="32" r="5" fill="#FFF3E4"/><path d="M14 54h36" stroke="#231B2E" stroke-width="4" stroke-linecap="round"/></svg>
             <h3>The agent does the maths</h3>
-            <p>It checks trains, flights and stays, then picks the best match. Takes about 2 seconds.</p>
+            <p>It compares our hand-picked price estimates for trains, flights and stays, then picks the best match. Instantly.</p>
           </li>
           <li class="card step">
             <span class="step__n">3</span>
             <svg viewBox="0 0 64 64" class="ill" aria-hidden="true"><path d="M10 12h44v40H10z" fill="#FFD9C2"/><path d="M18 24h28M18 32h28M18 40h16" stroke="#231B2E" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="48" r="10" fill="#1FB89A"/><path d="M43 48l4 4 7-8" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <h3>Get a day-by-day plan</h3>
-            <p>Friday night, Saturday, Sunday. Ready to book, with a budget that adds up.</p>
+            <p>Friday night, Saturday, Sunday. Ready to plan, with a budget that adds up, and the full plan in your inbox.</p>
           </li>
         </ol>
       </div>
@@ -461,7 +483,7 @@ a { color: inherit; }
             <span class="blk__tag">2 · Data</span>
             <span class="blk__ico" aria-hidden="true">🗂️</span>
             <h3>What it looks up</h3>
-            <ul><li>Train and flight prices</li><li>Hostel and stay costs</li><li>Food and activities</li></ul>
+            <ul><li>Train and flight price estimates</li><li>Hostel and stay costs</li><li>Food and activities</li></ul>
           </li>
           <li class="blk blk--hot">
             <span class="blk__tag">3 · Agent reasoning</span>
@@ -481,40 +503,49 @@ a { color: inherit; }
           <span>agent › budget=€150 · mode=train · vibe=chill</span>
           <span>agent › 14 cities loaded · 6 fit your budget</span>
           <span>agent › scoring vibe… Bruges 5/5 · Ghent 4/5 · Strasbourg 4/5</span>
-          <span class="ok">agent › plan ready ✓ (1.9s)</span>
+          <span class="ok">agent › plan ready ✓</span>
         </div>
 
         <ul class="values">
           <li><b>⏱️ Time saved</b><span>No more 14 browser tabs. 30 seconds instead of 3 hours.</span></li>
-          <li><b>💶 Budget respected</b><span>Every price adds up to your total. No surprise at checkout.</span></li>
-          <li><b>🎒 Ready to book</b><span>You get a plan, not a list of ideas. Just pick your train.</span></li>
+          <li><b>💶 Budget respected</b><span>Every estimate adds up to your total: transport, 2 nights and food.</span></li>
+          <li><b>🎒 Ready to plan</b><span>You get a plan, not a list of ideas. Then just pick your train.</span></li>
         </ul>
       </div>
     </section>
 
-    <!-- 6. TESTIMONIALS (placeholders) -->
-    <section class="sec" id="testimonials">
-      <div class="wrap">
-        <p class="kicker">Testimonials</p>
-        <h2>What students will say <span class="muted">(placeholders)</span></h2>
-        <div class="grid grid--3">
-          <!-- PLACEHOLDER content: fake quotes, replace with real feedback before launch -->
-          <figure class="card quote">
-            <span class="ph">Placeholder</span>
-            <blockquote>“Booked a Lisbon weekend during a lecture. My friends thought I'd been planning for weeks.”</blockquote>
-            <figcaption><i>🧑‍🎓</i> Student name · Business school</figcaption>
-          </figure>
-          <figure class="card quote">
-            <span class="ph">Placeholder</span>
-            <blockquote>“Finally a tool that tells me up front what the weekend will really cost.”</blockquote>
-            <figcaption><i>👩‍🎓</i> Student name · Engineering school</figcaption>
-          </figure>
-          <figure class="card quote">
-            <span class="ph">Placeholder</span>
-            <blockquote>“As an Erasmus student, this is how I discovered Bruges. 10/10 would escape again.”</blockquote>
-            <figcaption><i>🧑🏽‍🎓</i> Student name · Erasmus</figcaption>
-          </figure>
+    <!-- 6. WHAT LANDS IN YOUR INBOX (real example of Email 1) -->
+    <section class="sec" id="inbox">
+      <div class="wrap inbox">
+        <div class="inbox__copy">
+          <p class="kicker">What lands in your inbox</p>
+          <h2>Your plan, written for you.</h2>
+          <p class="sub">A minute after you unlock your weekend, the full plan arrives by email. This is a real one.</p>
+          <ul class="inbox__pts">
+            <li><b>✍️ Written from your answers</b><span>An AI model writes the opening from your budget, transport and vibe, in a student-to-student tone.</span></li>
+            <li><b>🧾 Exact plan, exact maths</b><span>The day-by-day plan and the cost breakdown come from our data, never from the AI, so nothing is invented.</span></li>
+            <li><b>🤫 One reminder, then quiet</b><span>If you don't reply, one friendly follow-up a few days later. Unsubscribe in one click.</span></li>
+          </ul>
         </div>
+        <figure class="card mail" aria-label="Example of the itinerary email">
+          <div class="mail__head">
+            <span class="mail__av" aria-hidden="true">🎒</span>
+            <div><b>Weekend Escape</b><small>to Léa · 1 min ago</small></div>
+          </div>
+          <p class="mail__subj">Brussels is ready for you, Léa 🇧🇪</p>
+          <div class="mail__body">
+            <p>Hey Léa,</p>
+            <p>Brussels has the best chocolate, legendary comic strip walls, and a Grand-Place that looks like a movie set. Your trip comes out to about €136, which fits right inside your €100 to €150 budget.</p>
+            <div class="mail__plan">
+              <span><b>🍫 Brussels, Belgium</b> · about €136 all in</span>
+              <span>🚆 Train, 1h20 · about €35 return</span>
+              <span>🛏️ 2 nights, about €28 a night · 🍟 food about €45</span>
+              <span class="mail__days"><i>Fri</i> Fries at Maison Antoine · <i>Sat</i> Grand-Place, Magritte Museum · <i>Sun</i> Jeu de Balle flea market</span>
+            </div>
+            <p>Take a look at train times 2 to 3 weeks ahead. If you want us to pick another city instead, just reply to this email.</p>
+            <p class="mail__foot">Estimates, not live prices: nothing is booked yet. · Unsubscribe</p>
+          </div>
+        </figure>
       </div>
     </section>
 
@@ -534,7 +565,7 @@ a { color: inherit; }
           </details>
           <details>
             <summary>How do you make money?</summary>
-            <p>Transparently: some booking links (trains, flights, stays) are affiliate links. If you book through them we earn a small commission, and you pay the same price. Later we might add sponsored newsletter spots, clearly labelled.</p>
+            <p>We don't, yet. Later, some booking links may become affiliate links: if you book through them we'd earn a small commission and you'd pay the same price. We'll always label them clearly.</p>
           </details>
           <details>
             <summary>What do you do with my email?</summary>
@@ -542,7 +573,7 @@ a { color: inherit; }
           </details>
           <details>
             <summary>Is this real AI?</summary>
-            <p>This demo uses a simple rules-based agent on curated data. The next version plugs in live APIs and an LLM for personalised itineraries.</p>
+            <p>Yes, used where it helps. Your match comes from clear rules on our curated data, so the maths is always right. Then an AI model (Google Gemini) writes your email from your answers, and an automation in n8n sorts new sign-ups for the team. The prices themselves are estimates, not live prices.</p>
           </details>
         </div>
       </div>
@@ -552,11 +583,11 @@ a { color: inherit; }
     <section class="sec" id="roadmap">
       <div class="wrap">
         <p class="kicker">Roadmap</p>
-        <h2>Where this is going</h2>
+        <h2>What's live, what's next</h2>
         <ol class="road">
+          <li class="card road--live"><span class="road__n">Live</span><h3>✍️ Emails written for you</h3><p>Your plan by email, with an opening an AI writes from your answers, and one friendly follow-up.</p></li>
           <li class="card"><span class="road__n">Next</span><h3>📡 Real-time prices</h3><p>Live train and flight prices through APIs, so the number you see is the number you pay.</p></li>
-          <li class="card"><span class="road__n">Then</span><h3>✍️ Personalised itineraries</h3><p>An LLM writes your plan around your tastes: food, music, pace, group size.</p></li>
-          <li class="card"><span class="road__n">Soon</span><h3>🔔 Price alerts</h3><p>“Lisbon just dropped to €45 return.” Pings when your dream weekend gets cheaper.</p></li>
+          <li class="card"><span class="road__n">Soon</span><h3>🔔 Price-drop alerts</h3><p>“Lisbon just dropped to €45 return.” For those who ticked the alerts box, when a dream weekend gets cheaper.</p></li>
         </ol>
       </div>
     </section>
@@ -574,11 +605,10 @@ a { color: inherit; }
     <div class="wrap foot__in">
       <div>
         <a class="logo" href="#top"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTgiIGZpbGw9IiNGRjVDNEQiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjM2IiByPSIxNSIgZmlsbD0iI0ZGQjkyRSIvPjxwYXRoIGQ9Ik00IDQ0aDU2djIwSDR6IiBmaWxsPSIjRkY1QzREIi8+PHBhdGggZD0iTTEyIDQ2aDQwIiBzdHJva2U9IiMyMzFCMkUiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTIyIDIybDIyLTgtNiAxNHoiIGZpbGw9IiMyMzFCMkUiLz48L3N2Zz4K" alt="" width="28" height="28"><span data-site-name>Weekend Escape</span></a>
-        <p class="fine">A student project. Prices are estimates. Some links may be affiliate links.</p>
+        <p class="fine">A student project from HEC Paris. Prices are estimates, nothing is booked for you.</p>
       </div>
       <nav aria-label="Footer">
-        <!-- Placeholder links: replace with real pages -->
-        <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a><a href="#">Instagram</a><a href="#">TikTok</a>
+        <a href="#how">How it works</a><a href="#faq">FAQ</a><a href="mailto:team9aibishermes@gmail.com">Contact</a>
       </nav>
     </div>
     <p class="wrap fine foot__priv">Privacy: we only use your email to send your itinerary, one follow-up and, if you opted in, cheap ticket alerts. Unsubscribe anytime.</p>
@@ -796,8 +826,7 @@ window.DESTINATIONS_FALLBACK = {
 /* ---------- 1. SIMPLE CONFIG (edit me) ---------- */
 const CONFIG = {
   siteName: "Weekend Escape",
-  // FICTIONAL social proof: replace with a real number before any real launch.
-  socialProof: "Join 1,200+ Paris students already planning their next escape",
+  socialProof: "Built by HEC students, for students in Paris",
   // Our server route that saves leads. See submitLead() below.
   formEndpoint: "/api/lead",
   thinkingMs: 2000, // length of the "agent is thinking" animation
@@ -1104,7 +1133,7 @@ function onSubmit(ev) {
     $("#locked").querySelectorAll("[aria-hidden]").forEach((n) => n.removeAttribute("aria-hidden"));
     $("#gate-slot").innerHTML = `<div class="gate"><div class="success" role="status">
       <b>You're in${lead.firstName ? ", " + esc(lead.firstName) : ""}! 🎉</b>
-      Your full itinerary is unlocked above.</div></div>`;
+      Your full itinerary is unlocked above, and a copy is on its way.<br>📬 Check your inbox, and your spam folder (school emails love to hide us).</div></div>`;
     $("#locked").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
     celebrate();
   }).catch((e) => {
