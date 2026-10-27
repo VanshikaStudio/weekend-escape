@@ -46,7 +46,7 @@ test("backup model: if the main model is busy or slow, the backup model writes t
     const out = await writeEmail1(lead, trip, { fetchFn, retryDelayMs: 0 });
     assert.equal(out.subject, "Lille for €99 🧇");
     assert.match(urls[0], /gemini-3\.8-flash/);
-    assert.match(urls[1], /gemini-3\.6-flash/);
+    assert.match(urls[1], /gemini-3\.1-flash-lite/);
   }
   delete process.env.GEMINI_API_KEY;
 });
